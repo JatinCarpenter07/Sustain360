@@ -98,6 +98,109 @@ const getHistory= async (req, res) => {
   }
 }
 
+//  GET - Smart Carbon Analytics API (supports all date combinations)
+const getAnalytics= async (req, res) => {
+  try {
+    const userId=req.user._id;
+    const {
+      groupBy = "daily", // "daily" | "weekly" | "monthly" | "yearly"
+      period = "custom", // "thisWeek" | "thisMonth" | "thisYear" | "custom"
+      start,
+      end,
+      year,
+      month,
+    } = req.query;
 
 
-module.exports={feedData,getHistory};
+    // 🗓️ Step 1: Compute start & end based on period
+    let fromDate, toDate;
+    const now = new Date();
+
+    if (period === "thisWeek") {
+      const day = now.getDay();
+      fromDate = new Date(now);
+      fromDate.setDate(now.getDate() - day + 1);
+      toDate = new Date(now);
+    } else if (period === "thisMonth") {
+      fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    } else if (period === "thisYear") {
+      fromDate = new Date(now.getFullYear(), 0, 1);
+      toDate = new Date(now.getFullYear(), 11, 31);
+    } else if (year && month) {
+      fromDate = new Date(year, month - 1, 1);
+      toDate = new Date(year, month, 0, 23, 59, 59);
+    } else if (year) {
+      fromDate = new Date(year, 0, 1);
+      toDate = new Date(year, 11, 31, 23, 59, 59);
+    } else if (start && end) {
+      fromDate = new Date(start);
+      toDate = new Date(end);
+    } else {
+      fromDate = new Date(now.getFullYear(), 0, 1); // default = current year
+      toDate = now;
+    }
+
+    // 🧩 Step 2: Query data
+    const entries = await carbonDataModel.find({
+      userId,
+      date: { $gte: fromDate, $lte: toDate },
+    }).sort({ date: 1 });
+
+    if (!entries.length)
+      return res.json({ message: "No data found", summary: null });
+
+    // 🧠 Step 3: Group dynamically
+    const grouped = {};
+    for (const e of entries) {
+      const d = new Date(e.date);
+      let key;
+
+      if (groupBy === "daily") key = d.toISOString().split("T")[0];
+      else if (groupBy === "weekly")
+        key = `${d.getFullYear()}-W${Math.ceil(d.getDate() / 7)}`;
+      else if (groupBy === "monthly")
+        key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      else key = `${d.getFullYear()}`;
+
+      if (!grouped[key]) grouped[key] = 0;
+      grouped[key] += e.totalKgCO2 || 0; // ✅ use correct field
+    }
+
+    // 🧮 Step 4: Calculate pie categories
+    const categoryTotals = { travel: 0, energy: 0, food: 0 };
+    let total = 0;
+
+    entries.forEach(e => {
+      if (e.breakdown) {
+        categoryTotals.travel += e.breakdown.travel || 0;
+        categoryTotals.energy += e.breakdown.energy || 0;
+        categoryTotals.food += e.breakdown.food || 0;
+      }
+      total += e.totalKgCO2 || 0;
+    });
+
+    // 🧾 Step 5: Stats
+    const values = Object.values(grouped);
+    const summary = {
+      total: total.toFixed(2),
+      average: (total / entries.length).toFixed(2),
+      max: Math.max(...values),
+      min: Math.min(...values),
+      count: entries.length,
+    };
+
+    res.json({
+      filterUsed: { period, groupBy, start, end, year, month },
+      categoryBreakdown: categoryTotals,
+      timeline: grouped,
+      summary,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+
+
+module.exports={feedData,getHistory,getAnalytics};
