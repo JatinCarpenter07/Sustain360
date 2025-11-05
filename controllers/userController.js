@@ -1,4 +1,4 @@
-const userDataModel = require('../models/usersData');
+const userDataModel = require('../models/usersModel');
 const { builtTheToken } = require('../services/auth');
 const crypto = require('crypto'); // for createHmac
 
@@ -11,6 +11,7 @@ const signup = async (req, res) => {
       phone,
       age,
       gender,
+      monthlyIncome,
       height,
       weight,
       bloodGroup,
@@ -30,6 +31,7 @@ const signup = async (req, res) => {
       phone,
       age,
       gender,
+      monthlyIncome,
       height,
       weight,
       bloodGroup,

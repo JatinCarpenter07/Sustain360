@@ -17,6 +17,8 @@ const usersDataSchemma=new mongoose.Schema({
   phone: { type: String, required: true },
   age: { type: Number, required: true },
   gender: { type: String, enum: ['male', 'female', 'other'], required: true },
+  monthlyIncome:{type:Number,required:true},
+  currency: { type: String, default: "INR" },
   height: { type: Number, required: true },
   weight: { type: Number, required: true },
   bloodGroup: { type: String, required: true },

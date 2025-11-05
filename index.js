@@ -5,7 +5,11 @@ const connectDB = require('./services/database');
 const cookieParser = require('cookie-parser');
 
 // Routes
-const userRouter = require('./routes/user');
+const userRouter = require('./routes/userRoutes');
+const carbonRoutes = require('./routes/carbonRoutes');
+const waterRoutes = require('./routes/waterRoutes');
+const financeRoutes = require('./routes/financeRoutes');
+const healthRoutes = require('./routes/healthRoutes');
 
 // Middlewares
 const authenticateJWT = require('./middlewares/authentication');
@@ -30,7 +34,11 @@ app.use(express.urlencoded({ extended: true }));
 // ==============================
 console.log("Setting up routes...");
 
-app.use("/user", userRouter);
+app.use("/api/user", userRouter);
+app.use('/api/carbon',authenticateJWT, carbonRoutes);
+app.use('/api/water',authenticateJWT, waterRoutes);
+app.use('/api/finance',authenticateJWT, financeRoutes);
+app.use('/api/health',authenticateJWT, healthRoutes);
 
 // ==============================
 // Start Server
