@@ -2,7 +2,6 @@ const mongoose=require('mongoose');
 
 const financeEntrySchema = new mongoose.Schema({
   userId: { type: String, required: true },
-
   // Daily dynamic data
   expenses: {
     food: { type: Number, default: 0 },

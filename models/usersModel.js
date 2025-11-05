@@ -19,6 +19,7 @@ const usersDataSchemma=new mongoose.Schema({
   gender: { type: String, enum: ['male', 'female', 'other'], required: true },
   monthlyIncome:{type:Number,required:true},
   currency: { type: String, default: "INR" },
+  lastUpdated: { type: Date, default: Date.now },
   height: { type: Number, required: true },
   weight: { type: Number, required: true },
   bloodGroup: { type: String, required: true },

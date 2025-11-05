@@ -2,7 +2,6 @@ const mongoose=require('mongoose');
 
 const waterEntrySchema = new mongoose.Schema({
   userId: { type: String, required: true },
-
   // Personal usage
   drinkingL: Number,
   showerMin: Number,

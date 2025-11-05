@@ -50,4 +50,65 @@ const feedData=async (req, res) => {
   }
 }
 
-module.exports={feedData};
+const updateMonthlyIncome=async (req,res)=>{
+  try {
+    const userId=req.user._id;
+    const { monthlyIncome } = req.body;
+    const profile = await userDataModel.findByIdAndUpdate(
+      userId,
+      { monthlyIncome, lastUpdated: new Date() },
+      { upsert: true, new: true }
+    );
+    res.json(profile);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// GET - Fetch finance history with pagination & date filter
+const getHistory= async (req, res) => {
+  try {
+    const userId=req.user._id;
+    const { start, end, page = 1, limit = 100 } = req.query;
+
+    // Basic query for user
+    const query = { userId };
+
+    //optional date boundation
+    if (start && end) {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      endDate.setHours(23, 59, 59, 999); // include full end day
+
+      query.date = {
+        $gte: startDate,
+        $lte: endDate,
+      };
+    }
+
+    // Pagination setup
+    const skip = (page - 1) * limit;
+
+    // Fetch latest-first sorted data
+    const data = await financeDataModel.find(query)
+      .sort({ date: -1 }) // latest to oldest
+      .skip(skip)
+      .limit(Number(limit));
+
+    // Count total entries for pagination
+    const total = await financeDataModel.countDocuments(query);
+
+    // Return paginated data
+    res.json({
+      page: Number(page),
+      limit: Number(limit),
+      totalRecords: total,
+      totalPages: Math.ceil(total / limit),
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+module.exports={feedData,updateMonthlyIncome,getHistory};

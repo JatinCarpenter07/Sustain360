@@ -2,7 +2,6 @@ const mongoose=require('mongoose');
 
 const wellnessEntrySchema = new mongoose.Schema({
   userId: { type: String, required: true },
-
   // Input fields
   steps: Number,
   calories: Number,
