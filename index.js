@@ -10,6 +10,7 @@ const carbonRoutes = require('./routes/carbonRoutes');
 const waterRoutes = require('./routes/waterRoutes');
 const financeRoutes = require('./routes/financeRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+const fitnessRouter=require('./routes/fitnessRoute');
 
 // Middlewares
 const authenticateJWT = require('./middlewares/authentication');
@@ -39,6 +40,7 @@ app.use('/api/carbon',authenticateJWT, carbonRoutes);
 app.use('/api/water',authenticateJWT, waterRoutes);
 app.use('/api/finance',authenticateJWT, financeRoutes);
 app.use('/api/health',authenticateJWT, healthRoutes);
+app.use('/api/fitness',authenticateJWT,fitnessRouter);
 
 // ==============================
 // Start Server
