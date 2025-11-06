@@ -95,4 +95,24 @@ const login = async (req, res) => {
   }
 };
 
-module.exports={ login,signup};
+//get profile
+const getUserProfile = async (req, res) => {
+  try {
+    // Humne user ki ID token se (auth middleware ke zariye) nikaal li hai
+    // req.user._id (yeh aapke auth middleware par depend karta hai)
+    const user = await userDataModel.findById(req.user._id).select('-password -salt'); // Password aur salt mat bhejna
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Poora user document bhej do
+    res.status(200).json({ user });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports={ login,signup,getUserProfile};

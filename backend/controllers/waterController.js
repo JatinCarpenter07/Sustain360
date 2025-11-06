@@ -1,16 +1,28 @@
 const waterDataModel = require('../models/waterModel');
 
 function calcWater(entry) {
+  //   const c = { shower: 9, laundry: 50, dish: 15, meat: 4500, veg: 322 };
+  //   const personal = ((entry.showerMin || 0) * c.shower) +
+  //                    ((entry.laundryLoads || 0) * c.laundry) +
+  //                    ((entry.dishUses || 0) * c.dish) +
+  //                    ((entry.drinkingL || 0));
+  //   const diet = ((entry.meatServings || 0) * c.meat) +
+  //                ((entry.vegServings || 0) * c.veg);
+  //   const total = personal + diet;
+  //   return { totalLiters: total, breakdown: { personal, diet } };
+  
   const c = { shower: 9, laundry: 50, dish: 15, meat: 4500, veg: 322 };
-  const personal = ((entry.showerMin || 0) * c.shower) +
-                   ((entry.laundryLoads || 0) * c.laundry) +
-                   ((entry.dishUses || 0) * c.dish) +
-                   ((entry.drinkingL || 0));
-  const diet = ((entry.meatServings || 0) * c.meat) +
-               ((entry.vegServings || 0) * c.veg);
-  const total = personal + diet;
-  return { totalLiters: total, breakdown: { personal, diet } };
-}
+    const personal = ((Number(entry.showerMin) || 0) * c.shower) +
+                     ((Number(entry.laundryLoads) || 0) * c.laundry) +
+                     ((Number(entry.dishUses) || 0) * c.dish) +
+                     (Number(entry.drinkingL) || 0); // <-- YEH HAI FIX
+  
+    const diet = ((Number(entry.meatServings) || 0) * c.meat) +
+                 ((Number(entry.vegServings) || 0) * c.veg);
+    
+    const total = personal + diet; // Ab yeh Number + Number hoga
+    return { totalLiters: total, breakdown: { personal, diet } };
+  }
 
 const feedData=async (req, res) => {
   try {

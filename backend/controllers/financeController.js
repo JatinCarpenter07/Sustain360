@@ -6,8 +6,13 @@ function calcFinance(entry, monthlyIncome) {
   const dailyIncome = monthlyIncome / 30;
   const exp = entry.expenses || {};
 
-  const totalExpenses = Object.values(exp).reduce((a, b) => a + (b || 0), 0);
-  const savingsAdded = entry.savingsAdded || 0;
+  // const totalExpenses = Object.values(exp).reduce((a, b) => a + (b || 0), 0);
+  // const savingsAdded = entry.savingsAdded || 0;
+
+  const totalExpenses = Object.values(exp).reduce((a, b) => a + (Number(b) || 0), 0);
+  //const totalExpenses = Object.values(exp).reduce((a, b) => a + (b || 0), 0);
+  const savingsAdded = Number(entry.savingsAdded) || 0; // Ise bhi Number() mein daal do
+ // const savingsAdded = entry.savingsAdded || 0;
 
   const idealSavings = dailyIncome * 0.2;
   const savingsScore = Math.min(100, (savingsAdded / idealSavings) * 100);
