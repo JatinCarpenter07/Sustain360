@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import ChartPage from './pages/ChartPage.jsx';
 import Layout from './components/Layout.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
+import FitnessDetails from './pages/FitnessDetails.jsx';
 
 import { useAuth } from './AuthContext.jsx';
 
@@ -50,6 +51,7 @@ function App() {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="dashboard/:type" element={<ChartPage />} />
         <Route path="profile" element={<ProfilePage />} /> {/* NAYA ROUTE */}
+        <Route path="fitness-details" element={<FitnessDetails />} />
       </Route>
 
     </Routes>

@@ -109,6 +109,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 import FunctionalCard from '../components/FunctionalCard.jsx';
 import LogActivityModal from '../components/LogActivityModal.jsx';
 import QuickLog from '../components/QuickLog.jsx';
@@ -123,6 +124,7 @@ const getGreeting = () => {
 
 const DashboardPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
 
@@ -157,7 +159,41 @@ const DashboardPage = () => {
           <p className="text-xl text-gray-700 mb-10 max-w-2xl mx-auto">
             "Your small actions today are shaping a better tomorrow. Let's log your impact."
           </p>
+          
+
+          {/* Existing Quick Log */}
           <QuickLog openModal={openModal} />
+
+          {/* Personal Fitness navigation button */}
+          <div className="mb-10 flex justify-center">
+            <div
+              onClick={() => navigate('/fitness-details')}
+              className="cursor-pointer bg-gradient-to-r from-green-400 to-blue-400 text-white shadow-md rounded-2xl p-6 w-[280px] sm:w-[300px] md:w-[340px] hover:scale-105 transform transition-all duration-300 flex flex-col items-center justify-center"
+            >
+              <div className="bg-white p-3 rounded-full mb-3 shadow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="w-10 h-10 text-green-600"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6v6l4 2m4-8A9 9 0 11 3 12a9 9 0 0117 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold tracking-wide">Personal Fitness</h3>
+              <p className="text-sm text-white/90 text-center mt-2">
+                Track your wellness, health, and finance insights
+              </p>
+            </div>
+          </div>
+
+
         </div>
 
         {/* 2. AAPKE 4 CARDS (Wave divider ki ab zaroorat nahi) */}

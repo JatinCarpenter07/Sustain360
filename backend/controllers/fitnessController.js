@@ -2,6 +2,7 @@ const carbonDataModel=require('../models/carbonModel');
 const waterDataModel=require('../models/waterModel');
 const financeDataModel=require('../models/financeModel');
 const healthDataModel=require('../models/healthModel');
+const usersDataModel = require('../models/usersModel');
 
 // Utility functions
 const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
@@ -15,15 +16,22 @@ const normalize = (ideal, actual, lowerIsBetter = false) => {
 const getFitness=async (req, res) => {
   try {
     const userId=req.user._id;
-    const {
-      gender = "male",
-      age = 25,
-      height = 170,
-      weight = 70,
-      bloodGroup,
-      start,
-      end
-    } = req.query;
+    const { start, end } = req.query;
+
+    // Fetch user data from usersData collection
+    const userData = await usersDataModel.findById(userId).select(
+      "fullName gender age height weight bloodGroup"
+    );
+
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const gender = userData.gender || "male";
+    const age = userData.age || 25;
+    const height = userData.height || 170;
+    const weight = userData.weight || 70;
+    const bloodGroup = userData.bloodGroup || "O+";
 
     // 🗓 Date filtering
     const fromDate = start ? new Date(start) : new Date(2020, 0, 1);
@@ -106,11 +114,11 @@ const getFitness=async (req, res) => {
         ? "BMI optimal for your height."
         : "Consider a more balanced diet and exercise."
     };
-
+    console.log("userData : ",userData);
     // ---- RESPONSE ----
     res.json({
       userId,
-      profile: { gender, age, height, weight, bloodGroup, bmi },
+      profile: { name: userData.fullName, gender, age, height, weight, bloodGroup, bmi },
       rangeUsed: { fromDate, toDate },
       actuals,
       ideals,
