@@ -17,7 +17,7 @@ const usersDataSchemma=new mongoose.Schema({
   phone: { type: String, required: true },
   age: { type: Number, required: true },
   gender: { type: String, enum: ['male', 'female', 'other'], required: true },
-  monthlyIncome:{type:Number,required:true},
+  monthlyIncome:{type:Number,default:60000},
   currency: { type: String, default: "INR" },
   lastUpdated: { type: Date, default: Date.now },
   height: { type: Number, required: true },

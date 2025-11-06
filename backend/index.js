@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const connectDB = require('./services/database');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 // Routes
 const userRouter = require('./routes/userRoutes');
@@ -25,6 +26,22 @@ console.log("Connecting to database...");// Replace with your actual Atlas URI
 connectDB();
 
 // ==============================
+// CORS Configuration
+// ==============================
+const allowedOrigins = [
+  'http://localhost:5173',  // React local dev
+  'http://127.0.0.1:5173',
+  'http://0.0.0.0:5173'
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// ==============================
 // Middlewares
 // ==============================
 app.use(express.json());
@@ -45,6 +62,6 @@ app.use('/api/fitness',authenticateJWT,fitnessRouter);
 // ==============================
 // Start Server
 // ==============================
-app.listen(port, "0.0.0.0", () => {
-    console.log(`Server is running on http://0.0.0.0:${port}`);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });

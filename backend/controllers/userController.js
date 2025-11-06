@@ -3,6 +3,7 @@ const { builtTheToken } = require('../services/auth');
 const crypto = require('crypto'); // for createHmac
 
 const signup = async (req, res) => {
+  console.log("Sign up trigger");
   try {
     const {
       fullName,

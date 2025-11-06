@@ -47,7 +47,7 @@ const feedData = async (req, res) => {
       totalKgCO2,
       breakdown,
     });
-
+    console.log("carbon Data feeded...");
     res.status(201).json(newRecord);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -101,6 +101,7 @@ const getHistory= async (req, res) => {
 //  GET - Smart Carbon Analytics API (supports all date combinations)
 const getAnalytics= async (req, res) => {
   try {
+    console.log("getAnalytics called");
     const userId=req.user._id;
     const {
       groupBy = "daily", // "daily" | "weekly" | "monthly" | "yearly"
@@ -190,6 +191,7 @@ const getAnalytics= async (req, res) => {
       count: entries.length,
     };
 
+    console.log("getAnalytics response sent");
     res.json({
       filterUsed: { period, groupBy, start, end, year, month },
       categoryBreakdown: categoryTotals,
@@ -197,6 +199,7 @@ const getAnalytics= async (req, res) => {
       summary,
     });
   } catch (err) {
+    console.error("Error in getAnalytics:", err);
     res.status(500).json({ error: err.message });
   }
 }
